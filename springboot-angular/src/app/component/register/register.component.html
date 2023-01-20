@@ -1,0 +1,72 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container pb-5 mb-sm-4">
+    <br><br>
+    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm.value)" [appMatchPassword]="['password', 'confirmPassword']">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-fn">First Name</label>
+                    <input class="form-control" type="text" name="firstName" id="reg-fn" ngModel #firstNameInput="ngModel" required maxlength="255" pattern="[A-Za-z0-9]+">
+                    <span class="help-block" *ngIf="firstNameInput.invalid && firstNameInput.touched && firstNameInput.errors?.['required']" style="color:red;">Please enter a first name.</span>
+                    <span class="help-block" *ngIf="firstNameInput.invalid && firstNameInput.touched && firstNameInput.errors?.['pattern']" style="color:red;">Only numbers and letters are allowed.</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-ln">Last Name</label>
+                    <input class="form-control" type="text" name="lastName" id="reg-ln" ngModel #lastNameInput="ngModel" required maxlength="255" pattern="[A-Za-z0-9]+">
+                    <span class="help-block" *ngIf="lastNameInput.invalid && lastNameInput.touched && lastNameInput.errors?.['required']" style="color:red;">Please enter a last name.</span>
+                    <span class="help-block" *ngIf="lastNameInput.invalid && lastNameInput.touched && lastNameInput.errors?.['pattern']" style="color:red;">Only numbers and letters are allowed.</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-email">E-mail Address</label>
+                    <input class="form-control" type="email" name="email" id="reg-email" ngModel #emailInput="ngModel" required email maxlength="255">
+                    <span class="help-block" *ngIf="emailInput.invalid && emailInput.touched && emailInput.errors?.['required']" style="color:red;">Please enter an email.</span>
+                    <span class="help-block" *ngIf="emailInput.invalid && emailInput.touched && emailInput.errors?.['email']" style="color:red;">Please enter correct email format.</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-username">Username</label>
+                    <input class="form-control" type="text" name="username" id="reg-username" ngModel #usernameInput="ngModel" required minlength="4" maxlength="20" pattern="[A-Za-z0-9]+">
+                    <span class="help-block" *ngIf="usernameInput.invalid && usernameInput.touched && usernameInput.errors?.['required']" style="color:red;">Please enter a username.</span>
+                    <span class="help-block" *ngIf="usernameInput.invalid && usernameInput.touched && usernameInput.errors?.['minlength']" style="color:red;">Minimum username size is 4.</span>
+                    <span class="help-block" *ngIf="usernameInput.invalid && usernameInput.touched && usernameInput.errors?.['pattern']" style="color:red;">Only numbers and letters are allowed.</span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input class="form-control" type="password" name="password" id="reg-password" ngModel #passwordInput="ngModel" required minlength="8" maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+                    <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['required']" style="color:red;">Please enter a password.</span>
+                    <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['minlength']" style="color:red;">Minimum password size is 8.</span>
+                    <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['pattern']" style="color:red;">
+                        At least one uppercase letter, one lowercase letter, one number and one special character
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label for="reg-password">Confirm password</label>
+                    <input class="form-control" type="password" name="confirmPassword" id="reg-confirmPassword" ngModel #confirmPasswordInput="ngModel">
+                    <span class="help-block" *ngIf="confirmPasswordInput.errors?.['matching']" style="color:red;">Password does not match.</span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="d-flex justify-content-center mt-3 login_container">
+            <button [disabled]="registerForm.invalid || showLoading" type="submit" name="button" class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">
+              <i *ngIf="showLoading" class="fas fa-spinner fa-spin"></i>&nbsp;&nbsp;
+              <span *ngIf="showLoading">Loading...</span>
+              <span *ngIf="!showLoading">Submit</span>
+            </button>
+        </div>
+    </form>
+</div>
+<div class="mt-4">
+    <div class="d-flex justify-content-center links">
+      Already have an account? <a routerLink="/login"  class="ml-2" style="color: #2C3E50;">Log In</a>
+    </div>
+</div>

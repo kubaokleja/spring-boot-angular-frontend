@@ -1,0 +1,87 @@
+<!-- Navbar -->
+<div style="  position: relative; min-height: 100vh; padding-bottom: 7.5rem; ">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse"
+      data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <form class="me-3">
+      </form>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/blog" [hidden]="!isUserLoggedIn">Blog</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/football" [hidden]="!isUserLoggedIn">Football</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/pizza" [hidden]="!isUserLoggedIn">Pizza</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/about">About</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav d-flex flex-row ms-auto me-3">
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#" [hidden]="!isUserLoggedIn" style="margin-top: 5px;">
+            <span><i class="fas fa-shopping-cart"></i></span>
+            <span class="badge rounded-pill badge-notification bg-danger">1</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" [hidden]="isUserLoggedIn">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/register" [hidden]="isUserLoggedIn">Register</a>
+        </li>
+        <li class="nav-item"  [hidden]="!isUserLoggedIn">
+          <div class="btn group">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" data-bs-display="static" aria-haspopup="true" aria-expanded="false" [hidden]="!isUserLoggedIn">
+              {{loggedInUsername}}
+            </button>
+            <div class="dropdown-menu" style="right: 0; left: auto;">  
+              <button class="dropdown-item" type="button" routerLink="/user/{{loggedUser?.userId}}" [hidden]="isAdmin">Account</button>
+              <button class="dropdown-item" type="button" routerLink="/users" [hidden]="!isAdmin">Admin Panel</button>
+              <button class="dropdown-item" type="button" (click)="logout()">Logout</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Navbar -->
+
+<router-outlet></router-outlet>
+<notifier-container></notifier-container>
+  <!-- Footer -->
+  <div style = "  position: absolute;  bottom: 0;  width: 100%;">
+  <footer class="bg-dark text-center text-white">
+  <!-- Section: Social media -->
+  <section class="mb-4">
+    <!-- Linkedin -->
+    <a class="btn btn-outline-light btn-floating m-1" target="_blank" rel="noopener noreferrer" href="https://linkedin.com/in/jakubokleja/" role="button"
+      ><i class="fab fa-linkedin-in"></i
+    ></a>
+
+    <!-- Github -->
+    <a class="btn btn-outline-light btn-floating m-1" target="_blank" rel="noopener noreferrer" href="https://github.com/kubaokleja" role="button"
+      ><i class="fab fa-github"></i
+    ></a>
+  </section>
+  <!-- Section: Social media -->
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+      © 2022 Copyright: Jakub Okleja
+    </div>
+    <!-- Copyright -->
+  </footer>
+  </div>
+<!-- Footer -->
+</div>
