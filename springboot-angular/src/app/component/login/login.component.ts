@@ -4,9 +4,11 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { HeaderType } from 'src/app/enum/header-type.enum';
 import { NotificationType } from 'src/app/enum/notification-type.enum';
+import { CustomHttpResponse } from 'src/app/model/custom-http-response';
 import { User } from 'src/app/model/user';
 import { AuthenticationService } from 'src/app/service/authentication.service';
 import { NotificationService } from 'src/app/service/notification.service';
+import { UserService } from 'src/app/service/user.service';
 
 @Component({
   selector: 'app-login',
@@ -18,7 +20,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
-              private notificationService: NotificationService) { }
+              private notificationService: NotificationService, private userService: UserService) { }
 
   ngOnInit(): void {
     if (this.authenticationService.isUserLoggedIn()) {
@@ -42,19 +44,45 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         (errorResponse: HttpErrorResponse) => {
           console.log(errorResponse);
-          this.sendErrorNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.showLoading = false;
         }
       )
     );
   }
   
-  private sendErrorNotification(notificationType: NotificationType, message: string): void {
+  public onResetPassword(): void {
+    this.clickButton('openResetPasswordModal');
+  }
+  
+  public onResetPasswordClick(): void {
+    this.clickButton('reset-password');
+  }
+
+  public resetPassword(email: string): void {
+    this.subscriptions.push(
+      this.userService.resetPassword(email).subscribe(
+        (response: CustomHttpResponse) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
+        },
+        (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      )
+    );
+    
+  }
+
+  private sendNotification(notificationType: NotificationType, message: string): void {
     if (message) {
       this.notificationService.notify(notificationType, message);
     } else {
       this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
     }
+  }
+  
+  private clickButton(buttonId: string): void {
+    document.getElementById(buttonId).click();
   }
 
   ngOnDestroy(): void {

@@ -51,6 +51,14 @@ export class UserService {
     return this.http.get(`${this.host}/user/register/confirm`, {params: params, responseType: 'text'});
   }
 
+  public resetPassword(email: string): Observable<CustomHttpResponse> {
+    return this.http.get<CustomHttpResponse>(`${this.host}/user/reset-password/${email}`);
+  }
+
+  public changePassword(password: string) {
+    return this.http.post<CustomHttpResponse>(`${this.host}/user/change-password/${password}`, {});
+  }
+
   public createUserFormData( user: User): FormData {
     const formData = new FormData();
     formData.append('firstName', user.firstName);

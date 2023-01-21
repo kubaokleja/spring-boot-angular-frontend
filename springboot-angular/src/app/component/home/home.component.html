@@ -1,1 +1,12 @@
-<img src="/assets/images/home-background.jpg" alt="image" style="height:100%; max-width: 100%;">
+
+<body>
+    <div class="home">
+        <h2>Best place in the world</h2>
+    </div>
+    <div class="map-container"
+    leaflet
+    [leafletOptions]="options"
+    (leafletMapReady)="onMapReady($event)"
+    (leafletClick)="mapClicked($event)">
+    </div>
+</body>

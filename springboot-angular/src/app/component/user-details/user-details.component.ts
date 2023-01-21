@@ -69,7 +69,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changePassword(form: NgForm): void {
     const password = form.value.password;
-    this.resetForm(form);
+    this.userService.changePassword(password).subscribe(
+      (response: CustomHttpResponse) => {
+        this.resetForm(form);
+        this.sendNotification(NotificationType.SUCCESS, response.message);
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+      }
+    );
   }
   
   resetForm(form: NgForm): void {

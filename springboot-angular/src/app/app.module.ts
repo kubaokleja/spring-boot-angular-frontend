@@ -15,6 +15,7 @@ import { UserManagementComponent } from './component/user-management/user-manage
 import { UserDetailsComponent } from './component/user-details/user-details.component';
 import { RegisterConfirmationComponent } from './component/register-confirmation/register-confirmation.component';
 import { MatchPasswordDirective } from './directive/match-password.directive';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MatchPasswordDirective } from './directive/match-password.directive';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NotificationModule
+    NotificationModule,
+    LeafletModule
   ],
   providers: [AuthenticationGuard, {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}],
   bootstrap: [AppComponent]

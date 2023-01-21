@@ -29,7 +29,7 @@
                         <span *ngIf="!showLoading">Login</span>
                       </button>
                       <br>
-                      <a class="text-muted" routerLink="/reset-password">Forgot password?</a>
+                      <a class="text-muted" (click)="onResetPassword()">Forgot password?</a>
                     </div>
   
                     <div class="d-flex align-items-center justify-content-center pb-4">
@@ -51,5 +51,35 @@
           </div>
         </div>
       </div>
+      <button [hidden]="true" type="button" id="openResetPasswordModal" data-toggle="modal" data-target="#resetPasswordModal"></button>
     </div>
   </section>
+
+
+  <div class="modal draggable fade bd-example-modal-lg" id="resetPasswordModal" tabindex="-1"
+  role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title text-center">Reset Password</h5>
+        </div>
+        <div class="modal-body">
+          <div class="">
+            <form #resetPasswordForm="ngForm" (ngSubmit)="resetPassword(resetPasswordEmailInput.value)">
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" name="email" class="form-control" ngModel #resetPasswordEmailInput="ngModel" required email maxlength="255">
+                <span class="help-block" *ngIf="resetPasswordEmailInput.invalid && resetPasswordEmailInput.touched && resetPasswordEmailInput.errors?.['required']" style="color:red;">Please enter an email</span>
+                <span class="help-block" *ngIf="resetPasswordEmailInput.invalid && resetPasswordEmailInput.touched && resetPasswordEmailInput.errors?.['email']" style="color:red;">Please enter correct email format</span>
+              </div>
+              <button type="submit" style="display: none;" id="reset-password"></button>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" (click)="onResetPasswordClick()" [disabled]="resetPasswordForm.invalid" class="btn btn-primary" data-dismiss="modal">Reset Password</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 0;">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
