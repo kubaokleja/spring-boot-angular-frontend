@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -7,8 +7,10 @@ import { CustomHttpResponse } from 'src/app/model/custom-http-response';
 import { Page } from 'src/app/model/page';
 import { Role } from 'src/app/model/role';
 import { User } from 'src/app/model/user';
+import { FileService } from 'src/app/service/file.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-user-management',
@@ -26,7 +28,8 @@ export class UserManagementComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   public editUser: User = new User();
 
-  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router) { }
+  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
     this.getUsers(true);
@@ -160,6 +163,40 @@ export class UserManagementComponent implements OnInit {
     );
   }
 
+  public downloadTemplate() {
+    this.fileService.downloadUserUploadTemplate().subscribe(
+      {
+        next: event => { 
+          if(event.type === HttpEventType.Response) {
+            saveAs(new File([event.body!], event.headers.get('File-Name')!, 
+            {type: `${event.headers.get('Content-Type')};charset=utf-8`}));
+          }
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      }
+    );
+  }
+  
+  onUploadFiles(event: Event): void {
+    console.log(event);
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    const formData: FormData = new FormData();
+    formData.append('file', files[0], files[0].name);
+  
+    this.fileService.uploadUsers(formData).subscribe(
+      {
+        next: (response: CustomHttpResponse) => {
+          this.sendNotification(NotificationType.SUCCESS, response.message);
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      }
+    );
+  }
   private sendNotification(notificationType: NotificationType, message: string): void {
     if (message) {
       this.notificationService.notify(notificationType, message);

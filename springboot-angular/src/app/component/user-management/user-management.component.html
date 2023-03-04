@@ -281,4 +281,32 @@
         </div>
       </div>
     </div>
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" style="margin-bottom: 20px;">
+      <div class="btn-group mr-2" role="group" aria-label="First group">
+        <button class="btn" (click)="downloadTemplate()"><i class="fa fa-folder"></i> Template</button>
+      </div>
+      <div class="btn-group mr-2" role="group" aria-label="Second group" style="margin-left: 10px;">
+        <label class="btn btn-default">
+          <input type="file" (change)="onUploadFiles($event)" />
+        </label>
+      </div>
+    </div>
+
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">No.</th>
+          <th scope="col">Date</th>
+          <th scope="col">Report</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">1</th>
+          <td>04.03.2023 09:42:23</td>
+          <td><i class="fas fa-arrow-alt-circle-down"></i> file.csv</td>
+        </tr>
+      </tbody>
+    </table>
+    
 </div> 
