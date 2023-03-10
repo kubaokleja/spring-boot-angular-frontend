@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         },
         (errorResponse: HttpErrorResponse) => {
           console.log(errorResponse);
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.showLoading = false;
         }
       )
@@ -63,24 +63,16 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.resetPassword(email).subscribe(
         (response: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, response.message);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
     
   }
 
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
-  }
-  
   private clickButton(buttonId: string): void {
     document.getElementById(buttonId).click();
   }

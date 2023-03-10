@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CustomHttpResponse } from '../model/custom-http-response';
+import { UploadUserDetails } from '../model/upload-user-details';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class FileService {
   }
 
   //upload files
-  uploadUsers(formData: FormData): Observable<CustomHttpResponse> {
-    return this.http.post<CustomHttpResponse>(`${this.host}/user/upload`, formData);
+  uploadUsers(formData: FormData): Observable<UploadUserDetails[]> {
+    return this.http.post<UploadUserDetails[]>(`${this.host}/user/upload`, formData);
   }
 }

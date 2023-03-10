@@ -11,6 +11,7 @@ import { FileService } from 'src/app/service/file.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { saveAs } from 'file-saver';
+import { UploadUserDetails } from 'src/app/model/upload-user-details';
 
 @Component({
   selector: 'app-user-management',
@@ -27,6 +28,9 @@ export class UserManagementComponent implements OnInit {
   public refreshing: boolean;
   private subscriptions: Subscription[] = [];
   public editUser: User = new User();
+  public userIdToDelete: string;
+
+  public userUploadResults: UploadUserDetails[] = [];
 
   constructor(private userService: UserService, private notificationService: NotificationService, private router: Router,
               private fileService: FileService) { }
@@ -67,11 +71,11 @@ export class UserManagementComponent implements OnInit {
           }
           this.currentSize = size;
           if (showNotification) {
-            this.sendNotification(NotificationType.SUCCESS, `User(s) loaded successfully.`);
+            this.notificationService.sendNotification(NotificationType.SUCCESS, `User(s) loaded successfully.`);
           }
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
           this.router.navigateByUrl('/');
         }
@@ -90,7 +94,7 @@ export class UserManagementComponent implements OnInit {
           this.currentPage = pageNumber;
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
         }
       )
@@ -116,10 +120,10 @@ export class UserManagementComponent implements OnInit {
         (response: User) => {
           this.clickButton('new-user-close');
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.username}.`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.username}.`);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
@@ -130,34 +134,39 @@ export class UserManagementComponent implements OnInit {
     this.clickButton('openUserEdit');
   }
 
+  public onDeleteUser(usedId: string): void {
+    this.userIdToDelete = usedId;
+    this.clickButton('openUserDeleteConfirmation');
+  }
+
   public onUpdateUserClick(): void {
     this.clickButton('user-update');
   }
 
-  public onUpdateUser(user: User): void {
+  public updateUser(user: User): void {
     this.subscriptions.push(
       this.userService.updateUserByAdmin(user).subscribe(
         (response: User) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated successfully`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated successfully`);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
   }
 
-  public onDeleteUser(userId: string): void{
+  public deleteUser(): void{
     this.subscriptions.push(
-      this.userService.deleteUserByAdmin(userId).subscribe(
+      this.userService.deleteUserByAdmin(this.userIdToDelete).subscribe(
         (response: CustomHttpResponse) => {
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, response.message);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
@@ -173,7 +182,7 @@ export class UserManagementComponent implements OnInit {
           }
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       }
     );
@@ -188,21 +197,19 @@ export class UserManagementComponent implements OnInit {
   
     this.fileService.uploadUsers(formData).subscribe(
       {
-        next: (response: CustomHttpResponse) => {
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+        next: (response: UploadUserDetails[]) => {
+          this.userUploadResults = response;
+          this.notificationService.sendNotification(NotificationType.SUCCESS, 'Users uploaded successfully.');
         },
         error: (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, 'Please upload CSV file.');
         }
       }
     );
   }
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
+
+  clearUploadMessage() {
+    this.userUploadResults = [];
   }
   
   private clickButton(buttonId: string): void {
