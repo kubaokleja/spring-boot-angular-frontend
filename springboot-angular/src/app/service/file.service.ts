@@ -15,7 +15,7 @@ export class FileService {
   constructor(private http: HttpClient) { }
 
   downloadUserUploadTemplate(): Observable<HttpEvent<Blob>> {
-    return this.http.get(`${this.host}/file/template/users-template.csv`, {
+    return this.http.get(`${this.host}/files/template/users-template.csv`, {
       observe: 'events',
       responseType: 'blob',
       reportProgress: true
@@ -24,6 +24,6 @@ export class FileService {
 
   //upload files
   uploadUsers(formData: FormData): Observable<UploadUserDetails[]> {
-    return this.http.post<UploadUserDetails[]>(`${this.host}/user/upload`, formData);
+    return this.http.post<UploadUserDetails[]>(`${this.host}/user-management/upload`, formData);
   }
 }
