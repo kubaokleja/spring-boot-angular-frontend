@@ -17,7 +17,7 @@ export class AuthInterceptor implements HttpInterceptor {
     if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/auth/login`)) {
       return httpHandler.handle(httpRequest);
     }
-    if (httpRequest.url === `${this.authenticationService.apiUrl}/users`) {
+    if (httpRequest.url === `${this.authenticationService.apiUrl}/users` && httpRequest.method === 'POST') {
       return httpHandler.handle(httpRequest);
     }
     if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/users/reset-password`)) {

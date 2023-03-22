@@ -178,7 +178,7 @@
             </div>
             <div class="modal-body">
               <div>
-                <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm.value)">
+                <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm)">
                   <div class="form-group">
                     <label for="firstName">First Name</label>
                     <input type="text" name="firstName" ngModel #firstNameInput="ngModel" required maxlength="255" pattern="[A-Za-z0-9]+" class="form-control">

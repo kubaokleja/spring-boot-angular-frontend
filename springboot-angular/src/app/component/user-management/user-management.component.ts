@@ -12,6 +12,7 @@ import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { saveAs } from 'file-saver';
 import { UploadUserDetails } from 'src/app/model/upload-user-details';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-user-management',
@@ -114,19 +115,25 @@ export class UserManagementComponent implements OnInit {
     this.clickButton('new-user-save');
   }
   
-  public onAddNewUser(user: User): void{
+  public onAddNewUser(form: NgForm): void{
     this.subscriptions.push(
-      this.userService.createUserByAdmin(user).subscribe(
+      this.userService.createUserByAdmin(form.value).subscribe(
         (response: User) => {
           this.clickButton('new-user-close');
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
           this.notificationService.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.username}.`);
+          
+          this.resetForm(form);
         },
         (errorResponse: HttpErrorResponse) => {
           this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
+  }
+
+  resetForm(form: NgForm): void {
+    form.resetForm();
   }
 
   public onEditUser(editUser: User): void {
