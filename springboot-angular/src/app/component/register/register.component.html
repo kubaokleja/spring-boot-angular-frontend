@@ -39,7 +39,7 @@
             <div class="col-sm-6">
                 <div class="form-group">
                     <label for="reg-password">Password</label>
-                    <input class="form-control" type="password" name="password" id="reg-password" ngModel #passwordInput="ngModel" required minlength="8" maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$">
+                    <input class="form-control" type="password" name="password" id="reg-password" ngModel #passwordInput="ngModel" required minlength="8" maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$">
                     <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['required']" style="color:red;">Please enter a password.</span>
                     <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['minlength']" style="color:red;">Minimum password size is 8.</span>
                     <span class="help-block" *ngIf="passwordInput.invalid && passwordInput.touched && passwordInput.errors?.['pattern']" style="color:red;">
@@ -64,9 +64,7 @@
             </button>
         </div>
     </form>
-</div>
-<div class="mt-4">
     <div class="d-flex justify-content-center links">
-      Already have an account? <a routerLink="/login"  class="ml-2" style="color: #2C3E50;">Log In</a>
+        Already have an account? <a routerLink="/login"  class="ml-2" style="color: #2C3E50;">Log In</a>
     </div>
 </div>

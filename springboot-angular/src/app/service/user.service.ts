@@ -16,39 +16,47 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   public getUsers(keyword: string = '', page?: number, size?: number): Observable<Page | HttpErrorResponse> {  
-    return this.http.get<Page | HttpErrorResponse>(`${this.host}/user/list?keyword=${keyword}&page=${page}&size=${size}`);
+    return this.http.get<Page | HttpErrorResponse>(`${this.host}/user-management?keyword=${keyword}&page=${page}&size=${size}`);
   }
 
   public getUserById(userId: string): Observable<User | HttpErrorResponse> {
-    return this.http.get<User | HttpErrorResponse>(`${this.host}/user/${userId}`);
+    return this.http.get<User | HttpErrorResponse>(`${this.host}/users/${userId}`);
   }
 
   public updateUser(user: User, userId: string):  Observable<User | HttpErrorResponse>{
-    return this.http.post<User | HttpErrorResponse>
-      (`${this.host}/user/${userId}`, user);
+    return this.http.put<User | HttpErrorResponse>
+      (`${this.host}/users/${userId}`, user);
   }
 
   public deleteUser(userId: string): Observable<CustomHttpResponse> {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/user/${userId}`);
+    return this.http.delete<CustomHttpResponse>(`${this.host}/users/${userId}`);
   }
 
   public createUserByAdmin(user: User):  Observable<User | HttpErrorResponse>{
     return this.http.post<User | HttpErrorResponse>
-      (`${this.host}/user/create`, user);
+      (`${this.host}/user-management`, user);
   }
 
   public updateUserByAdmin(user: User):  Observable<User | HttpErrorResponse>{
-    return this.http.post<User | HttpErrorResponse>
-      (`${this.host}/user/update`, user);
+    return this.http.put<User | HttpErrorResponse>
+      (`${this.host}/user-management`, user);
   }
 
   public deleteUserByAdmin(userId: string): Observable<CustomHttpResponse> {
-    return this.http.delete<CustomHttpResponse>(`${this.host}/user/delete/${userId}`);
+    return this.http.delete<CustomHttpResponse>(`${this.host}/user-management/${userId}`);
   }
 
   public confirmRegistration(token: string): Observable<string | HttpErrorResponse> {
     let params = {token: token};
-    return this.http.get(`${this.host}/user/register/confirm`, {params: params, responseType: 'text'});
+    return this.http.get(`${this.host}/users/confirm`, {params: params, responseType: 'text'});
+  }
+
+  public resetPassword(email: string): Observable<CustomHttpResponse> {
+    return this.http.post<CustomHttpResponse>(`${this.host}/users/reset-password/${email}`, {});
+  }
+
+  public changePassword(password: string) {
+    return this.http.post<CustomHttpResponse>(`${this.host}/users/change-password/${password}`, {});
   }
 
   public createUserFormData( user: User): FormData {

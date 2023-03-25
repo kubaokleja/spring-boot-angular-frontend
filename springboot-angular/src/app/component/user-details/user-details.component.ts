@@ -35,10 +35,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.userService.getUserById(userId).subscribe(
         (response: User) => {
           this.user = response;
-          this.sendNotification(NotificationType.SUCCESS, `User loaded successfully.`);
+          this.notificationService.notify(NotificationType.SUCCESS, `User loaded successfully.`);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.router.navigateByUrl('/');
         }
       )
@@ -50,10 +50,10 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
       this.userService.updateUser(user, this.userId).subscribe(
         (response: User) => {
           this.user = response;
-          this.sendNotification(NotificationType.SUCCESS, `User updated successfully.`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `User updated successfully.`);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
@@ -69,7 +69,15 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
 
   changePassword(form: NgForm): void {
     const password = form.value.password;
-    this.resetForm(form);
+    this.userService.changePassword(password).subscribe(
+      (response: CustomHttpResponse) => {
+        this.resetForm(form);
+        this.notificationService.sendNotification(NotificationType.SUCCESS, response.message);
+      },
+      (errorResponse: HttpErrorResponse) => {
+        this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+      }
+    );
   }
   
   resetForm(form: NgForm): void {
@@ -84,21 +92,13 @@ export class UserDetailsComponent implements OnInit, OnDestroy {
           this.router.navigateByUrl('/').then(() => {
             window.location.reload();
           });
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, response.message);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
-  }
-
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
   }
   
   private clickButton(buttonId: string): void {

@@ -1,4 +1,4 @@
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -7,8 +7,12 @@ import { CustomHttpResponse } from 'src/app/model/custom-http-response';
 import { Page } from 'src/app/model/page';
 import { Role } from 'src/app/model/role';
 import { User } from 'src/app/model/user';
+import { FileService } from 'src/app/service/file.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
+import { saveAs } from 'file-saver';
+import { UploadUserDetails } from 'src/app/model/upload-user-details';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-user-management',
@@ -25,8 +29,12 @@ export class UserManagementComponent implements OnInit {
   public refreshing: boolean;
   private subscriptions: Subscription[] = [];
   public editUser: User = new User();
+  public userIdToDelete: string;
 
-  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router) { }
+  public userUploadResults: UploadUserDetails[] = [];
+
+  constructor(private userService: UserService, private notificationService: NotificationService, private router: Router,
+              private fileService: FileService) { }
 
   ngOnInit(): void {
     this.getUsers(true);
@@ -64,11 +72,11 @@ export class UserManagementComponent implements OnInit {
           }
           this.currentSize = size;
           if (showNotification) {
-            this.sendNotification(NotificationType.SUCCESS, `User(s) loaded successfully.`);
+            this.notificationService.sendNotification(NotificationType.SUCCESS, `User(s) loaded successfully.`);
           }
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
           this.router.navigateByUrl('/');
         }
@@ -87,7 +95,7 @@ export class UserManagementComponent implements OnInit {
           this.currentPage = pageNumber;
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.refreshing = false;
         }
       )
@@ -107,19 +115,25 @@ export class UserManagementComponent implements OnInit {
     this.clickButton('new-user-save');
   }
   
-  public onAddNewUser(user: User): void{
+  public onAddNewUser(form: NgForm): void{
     this.subscriptions.push(
-      this.userService.createUserByAdmin(user).subscribe(
+      this.userService.createUserByAdmin(form.value).subscribe(
         (response: User) => {
           this.clickButton('new-user-close');
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.username}.`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `A new account was created for ${response.username}.`);
+          
+          this.resetForm(form);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
+  }
+
+  resetForm(form: NgForm): void {
+    form.resetForm();
   }
 
   public onEditUser(editUser: User): void {
@@ -127,45 +141,82 @@ export class UserManagementComponent implements OnInit {
     this.clickButton('openUserEdit');
   }
 
+  public onDeleteUser(usedId: string): void {
+    this.userIdToDelete = usedId;
+    this.clickButton('openUserDeleteConfirmation');
+  }
+
   public onUpdateUserClick(): void {
     this.clickButton('user-update');
   }
 
-  public onUpdateUser(user: User): void {
+  public updateUser(user: User): void {
     this.subscriptions.push(
       this.userService.updateUserByAdmin(user).subscribe(
         (response: User) => {
           this.clickButton('closeEditUserModalButton');
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated successfully`);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, `${response.firstName} ${response.lastName} updated successfully`);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
   }
 
-  public onDeleteUser(userId: string): void{
+  public deleteUser(): void{
     this.subscriptions.push(
-      this.userService.deleteUserByAdmin(userId).subscribe(
+      this.userService.deleteUserByAdmin(this.userIdToDelete).subscribe(
         (response: CustomHttpResponse) => {
           this.getUsers(false, this.currentKeyword, this.currentPage, this.currentSize);
-          this.sendNotification(NotificationType.SUCCESS, response.message);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, response.message);
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
         }
       )
     );
   }
 
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
+  public downloadTemplate() {
+    this.fileService.downloadUserUploadTemplate().subscribe(
+      {
+        next: event => { 
+          if(event.type === HttpEventType.Response) {
+            saveAs(new File([event.body!], event.headers.get('File-Name')!, 
+            {type: `${event.headers.get('Content-Type')};charset=utf-8`}));
+          }
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+        }
+      }
+    );
+  }
+  
+  onUploadFiles(event: Event): void {
+    console.log(event);
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    const formData: FormData = new FormData();
+    formData.append('file', files[0], files[0].name);
+  
+    this.fileService.uploadUsers(formData).subscribe(
+      {
+        next: (response: UploadUserDetails[]) => {
+          this.userUploadResults = response;
+          this.notificationService.sendNotification(NotificationType.SUCCESS, 'Users uploaded successfully.');
+        },
+        error: (errorResponse: HttpErrorResponse) => {
+          this.notificationService.sendNotification(NotificationType.ERROR, 'Please upload CSV file.');
+        }
+      }
+    );
+  }
+
+  clearUploadMessage() {
+    this.userUploadResults = [];
   }
   
   private clickButton(buttonId: string): void {

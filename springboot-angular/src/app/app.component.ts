@@ -31,7 +31,7 @@ export class AppComponent implements OnInit{
     this.authenticationService.logOut();
     this.router.navigateByUrl('/')
     this.ngOnInit();
-    this.sendNotification(NotificationType.SUCCESS, `You have been logged out successfully`);
+    this.notificationService.sendNotification(NotificationType.SUCCESS, `You have been logged out successfully`);
   }
 
   public get isAdmin(): boolean {
@@ -40,14 +40,6 @@ export class AppComponent implements OnInit{
 
   private getUserRoles(): Role[] {
     return this.authenticationService.getUserFromLocalCache()?.roles;
-  }
-
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
   }
 
 }

@@ -14,10 +14,16 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authenticationService: AuthenticationService) {}
 
   intercept(httpRequest: HttpRequest<any>, httpHandler: HttpHandler): Observable<HttpEvent<any>> {
-    if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/user/login`)) {
+    if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/auth/login`)) {
       return httpHandler.handle(httpRequest);
     }
-    if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/user/register`)) {
+    if (httpRequest.url === `${this.authenticationService.apiUrl}/users` && httpRequest.method === 'POST') {
+      return httpHandler.handle(httpRequest);
+    }
+    if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/users/reset-password`)) {
+      return httpHandler.handle(httpRequest);
+    }
+    if (httpRequest.url.includes(`${this.authenticationService.apiUrl}/users/confirm`)) {
       return httpHandler.handle(httpRequest);
     }
     this.authenticationService.loadToken();

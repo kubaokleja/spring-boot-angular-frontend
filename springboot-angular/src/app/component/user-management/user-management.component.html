@@ -88,8 +88,26 @@
             </nav>
         </div>
     </div>
+
+    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups" style="margin-bottom: 20px;">
+      <div class="btn-group mr-3" role="group" aria-label="First group">
+        <button class="btn" (click)="downloadTemplate()"><i class="fa fa-folder"></i> Template</button>
+      </div>
+      <div class="btn-group mr-3" role="group" aria-label="Second group" style="margin-left: 10px;">
+        <label class="btn btn-default">
+          <input type="file" (change)="onUploadFiles($event)" />
+        </label>
+      </div>
+      <div class="btn-group mr-3" role="group" aria-label="Third group">
+        <button type="button" [disabled]="!userUploadResults || userUploadResults.length === 0" class="btn btn-secondary" (click)="clearUploadMessage()">Clear</button>
+      </div>
+    </div>
+
+    <li *ngFor="let userUploadResult of userUploadResults">Row: {{userUploadResult.row}} - Message: {{userUploadResult.message}} </li>
+    <br>
     <button [hidden]="true" type="button" id="openUserInfo" data-toggle="modal" data-target="#viewUserModal"></button>
     <button [hidden]="true" type="button" id="openUserEdit" data-toggle="modal" data-target="#editUserModal"></button>
+    <button [hidden]="true" type="button" id="openUserDeleteConfirmation" data-toggle="modal" data-target="#deleteUserModal"></button>
 
     <!-- modal user info -->
     <div class="modal fade bd-example-modal-lg" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby=""
@@ -150,7 +168,7 @@
       </div>
     </div>
 
-        <!-- model add user -->
+      <!-- model add user -->
       <div class="modal draggable fade bd-example-modal-lg" id="addUserModal" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -160,7 +178,7 @@
             </div>
             <div class="modal-body">
               <div>
-                <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm.value)">
+                <form #newUserForm="ngForm" (ngSubmit)="onAddNewUser(newUserForm)">
                   <div class="form-group">
                     <label for="firstName">First Name</label>
                     <input type="text" name="firstName" ngModel #firstNameInput="ngModel" required maxlength="255" pattern="[A-Za-z0-9]+" class="form-control">
@@ -186,15 +204,6 @@
                     <span class="help-block" *ngIf="emailInput.invalid && emailInput.touched && emailInput.errors?.['required']" style="color:red;">Please enter an email</span>
                     <span class="help-block" *ngIf="emailInput.invalid && emailInput.touched && emailInput.errors?.['email']" style="color:red;">Please enter correct email format</span>
                   </div>
-                  <!--TODO: GET ALL AVAILABLE ROLES AND LOOP / MULTISELECT (FOR NOW DEFAULT ROLE IS USER :) )
-                  <div class="form-group">
-                    <label for="roles">Role</label>
-                    <select name="role" required ngModel="ROLE_USER" class="form-control">
-                      <option value="ROLE_USER">USER</option>
-                      <option value="ROLE_ADMIN">ADMIN</option>
-                    </select>
-                  </div>
-                  -->
                   <fieldset class="form-group">
                     <div class="form-check">
                       <label class="form-check-label">
@@ -231,7 +240,7 @@
           </div>
           <div class="modal-body">
             <div class="">
-              <form #editUserForm="ngForm" (ngSubmit)="onUpdateUser(editUserForm.value)">
+              <form #editUserForm="ngForm" (ngSubmit)="updateUser(editUserForm.value)">
                 <div class="form-group">
                   <label for="firstName">First Name</label>
                   <input type="text" name="firstName" [(ngModel)]="editUser.firstName" ngModel #updateFirstNameInput="ngModel" required maxlength="255" pattern="[A-Za-z0-9]+" class="form-control">
@@ -281,4 +290,20 @@
         </div>
       </div>
     </div>
+        
+    <div class="modal draggable fade bd-example-modal-lg" id="deleteUserModal" tabindex="-1"
+    role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" style="background-color:transparent;">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title text-center">Are you sure you want to delete user?</h5>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-danger" data-dismiss="modal" (click)="deleteUser()"> Confirm</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 0;">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
 </div> 

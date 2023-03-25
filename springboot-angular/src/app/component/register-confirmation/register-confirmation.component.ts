@@ -30,23 +30,15 @@ export class RegisterConfirmationComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.userService.confirmRegistration(this.token).subscribe(
         (response: string) => {
-          this.sendNotification(NotificationType.SUCCESS, response);
+          this.notificationService.sendNotification(NotificationType.SUCCESS, response);
           this.router.navigateByUrl('/login');
         },
         (errorResponse: HttpErrorResponse) => {
-          this.sendNotification(NotificationType.ERROR, errorResponse.error.message);
+          this.notificationService.sendNotification(NotificationType.ERROR, errorResponse.error.message);
           this.router.navigateByUrl('/');
         }
       )
     );    
-  }
-
-  private sendNotification(notificationType: NotificationType, message: string): void {
-    if (message) {
-      this.notificationService.notify(notificationType, message);
-    } else {
-      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
-    }
   }
 
   ngOnDestroy(): void {

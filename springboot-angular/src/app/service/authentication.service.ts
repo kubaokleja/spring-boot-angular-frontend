@@ -18,12 +18,12 @@ export class AuthenticationService {
   constructor(private httpClient: HttpClient) { }
 
   public login(user: User): Observable<HttpResponse<User> | HttpErrorResponse>{
-    return this.httpClient.post<User>(`${this.apiUrl}/user/login`, user, {observe: 'response'});
+    return this.httpClient.post<User>(`${this.apiUrl}/auth/login`, user, {observe: 'response'});
   }
 
   public register(user: User): Observable<User | HttpErrorResponse>{
     return this.httpClient.post<User | HttpErrorResponse>
-      (`${this.apiUrl}/user/register`, user);
+      (`${this.apiUrl}/users`, user);
   }
 
   public logOut(): void {
