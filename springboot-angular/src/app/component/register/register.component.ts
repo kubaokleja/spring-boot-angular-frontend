@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { AuthenticationService } from '../../service/authentication.service';
-import { User } from 'src/app/model/user';
+import { User } from 'src/app/model/user/user';
 import { NotificationService } from 'src/app/service/notification.service';
 import { NotificationType } from 'src/app/enum/notification-type.enum';
 
