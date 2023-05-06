@@ -16,6 +16,9 @@ import { UserDetailsComponent } from './component/user-details/user-details.comp
 import { RegisterConfirmationComponent } from './component/register-confirmation/register-confirmation.component';
 import { MatchPasswordDirective } from './directive/match-password.directive';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { AboutMeComponent } from './component/about-me/about-me.component';
+import { FootballComponent } from './component/football/football.component';
+import { TopScorerComponent } from './component/football/children/top-scorer/top-scorer.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +29,10 @@ import { LeafletModule } from '@asymmetrik/ngx-leaflet';
     UserManagementComponent,
     UserDetailsComponent,
     RegisterConfirmationComponent,
-    MatchPasswordDirective
+    MatchPasswordDirective,
+    AboutMeComponent,
+    FootballComponent,
+    TopScorerComponent
   ],
   imports: [
     BrowserModule,

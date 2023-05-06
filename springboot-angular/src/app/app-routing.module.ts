@@ -6,10 +6,21 @@ import { RegisterConfirmationComponent } from './component/register-confirmation
 import { RegisterComponent } from './component/register/register.component';
 import { UserDetailsComponent } from './component/user-details/user-details.component';
 import { UserManagementComponent } from './component/user-management/user-management.component';
+import { AboutMeComponent } from './component/about-me/about-me.component';
+import { FootballComponent } from './component/football/football.component';
+import { TopScorerComponent } from './component/football/children/top-scorer/top-scorer.component';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'login', component: LoginComponent},
+  {path: 'about', component: AboutMeComponent},
+  {path: 'football', component: FootballComponent, 
+    children: [
+      {
+        path: 'top-scorers', component: TopScorerComponent,
+      }
+    ]
+  },
   {path: 'register', component: RegisterComponent},
   {path: 'register/confirm', component: RegisterConfirmationComponent},
   {path: 'users', component: UserManagementComponent},

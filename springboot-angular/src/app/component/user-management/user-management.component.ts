@@ -5,13 +5,13 @@ import { Subscription } from 'rxjs';
 import { NotificationType } from 'src/app/enum/notification-type.enum';
 import { CustomHttpResponse } from 'src/app/model/custom-http-response';
 import { Page } from 'src/app/model/page';
-import { Role } from 'src/app/model/role';
-import { User } from 'src/app/model/user';
+import { Role } from 'src/app/model/user/role';
+import { User } from 'src/app/model/user/user';
 import { FileService } from 'src/app/service/file.service';
 import { NotificationService } from 'src/app/service/notification.service';
 import { UserService } from 'src/app/service/user.service';
 import { saveAs } from 'file-saver';
-import { UploadUserDetails } from 'src/app/model/upload-user-details';
+import { UploadUserDetails } from 'src/app/model/user/upload-user-details';
 import { NgForm } from '@angular/forms';
 
 @Component({

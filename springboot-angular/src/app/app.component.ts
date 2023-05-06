@@ -1,8 +1,8 @@
 import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { NotificationType } from './enum/notification-type.enum';
-import { Role } from './model/role';
-import { User } from './model/user';
+import { Role } from './model/user/role';
+import { User } from './model/user/user';
 import { AuthenticationService } from './service/authentication.service';
 import { NotificationService } from './service/notification.service';
 

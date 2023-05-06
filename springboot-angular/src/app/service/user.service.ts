@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { CustomHttpResponse } from '../model/custom-http-response';
 import { Page } from '../model/page';
-import { User } from '../model/user';
+import { User } from '../model/user/user';
 
 @Injectable({
   providedIn: 'root'
