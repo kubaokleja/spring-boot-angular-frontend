@@ -2,7 +2,6 @@ import { HttpClient, HttpEvent } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { CustomHttpResponse } from '../model/custom-http-response';
 import { UploadUserDetails } from '../model/user/upload-user-details';
 
 @Injectable({
